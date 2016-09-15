@@ -319,6 +319,12 @@ class InspecRspecCli < InspecRspecJson # rubocop:disable Metrics/ClassLength
               COLORS['failed'], tests_res['failed'], COLORS['reset'],
               COLORS['skipped'], tests_res['skipped'], COLORS['reset'])
     output.puts(s) if !@anonymous_tests.empty?
+
+    s = format('Summary: %s%d successful%s, %s%d failures%s, %s%d skipped%s',
+              COLORS['passed'], 0, COLORS['reset'],
+              COLORS['failed'], 0, COLORS['reset'],
+              COLORS['skipped'], 0, COLORS['reset'])
+    output.puts(s) if @current_control.nil? || (@anonymous_tests.empty? && controls_res['total'] == 0)
   end
 
   private

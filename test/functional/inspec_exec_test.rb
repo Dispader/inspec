@@ -19,7 +19,7 @@ describe 'inspec exec' do
 \e[37m     ○  Can't find file \"/tmp/gordon/config.yaml\"\e[0m
 "
     stdout.must_include "\nProfile Summary: \e[32m2 successful\e[0m, \e[31m0 failures\e[0m, \e[37m1 skipped\e[0m"
-    stdout.must_include "\nTest Summary: \e[32m4 successful\e[0m, \e[31m0 failures\e[0m, \e[37m1 skipped\e[0m\n"
+    stdout.must_include "\nTest Summary: \e[32m1 successful\e[0m, \e[31m0 failures\e[0m, \e[37m0 skipped\e[0m\n"
   end
 
   it 'executes a minimum metadata-only profile' do
@@ -87,7 +87,7 @@ Summary: \e[32m0 successful\e[0m, \e[31m0 failures\e[0m, \e[37m0 skipped\e[0m
     out.stderr.must_equal ''
     out.exit_status.must_equal 0
     out.stdout.must_include "\nProfile Summary: \e[32m1 successful\e[0m, \e[31m0 failures\e[0m, \e[37m0 skipped\e[0m\n"
-    out.stdout.must_include "\nTest Summary: \e[32m2 successful\e[0m, \e[31m0 failures\e[0m"
+    out.stdout.must_include "\nTest Summary: \e[32m1 successful\e[0m, \e[31m0 failures\e[0m"
   end
 
   describe 'with a profile that is not supported on this OS/platform' do

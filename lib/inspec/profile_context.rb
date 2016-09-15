@@ -138,7 +138,7 @@ module Inspec
       else
         @current_load[:file] || 'unknown'
       end
-      r.instance_variable_set(:@__file, current_load[:file])
+      r.instance_variable_set(:@__file, file)
       r.instance_variable_set(:@__group_title, current_load[:title])
 
       # add the rule to the registry
