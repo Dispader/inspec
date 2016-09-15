@@ -4,7 +4,6 @@
 
 require 'rspec/core/formatters/base_text_formatter'
 require 'pry'
-require 'fetchers/mock'
 
 module Inspec
   # A pry based shell for inspec. Given a runner (with a configured backend and
@@ -19,6 +18,10 @@ module Inspec
       # Create an in-memory empty runner so that we can add tests to it later.
       # This context lasts for the duration of this "start" method call/pry
       # session.
+
+      # require fetchers/mock here to ensure it is only loaded when we are actually using the shell
+      # loading it at the top of the file adds it to the fetcher registry which affects fetcher resolution
+      require 'fetchers/mock'
       @runner.add_target({'inspec.yml' => 'name: inspec-shell'})
       @our_profile = @runner.target_profiles.first
       @ctx = @our_profile.runner_context
