@@ -4,6 +4,7 @@
 
 require 'rspec/core/formatters/base_text_formatter'
 require 'pry'
+require 'fetchers/mock'
 
 module Inspec
   # A pry based shell for inspec. Given a runner (with a configured backend and
@@ -18,7 +19,9 @@ module Inspec
       # Create an in-memory empty runner so that we can add tests to it later.
       # This context lasts for the duration of this "start" method call/pry
       # session.
-      @ctx = @runner.create_context
+      @runner.add_target({'inspec.yml' => 'name: inspec-shell'})
+      @our_profile = @runner.target_profiles.first
+      @ctx = @our_profile.runner_context
       configure_pry
 
       # This will hold a single evaluation binding context as opened within
@@ -51,26 +54,20 @@ module Inspec
 
       # Track the rules currently registered and what their merge count is.
       Pry.hooks.add_hook(:before_eval, 'inspec_before_eval') do
-        @current_eval_rules = @ctx.rules.each_with_object({}) do |(rule_id, rule), h|
-          h[rule_id] = Inspec::Rule.merge_count(rule)
-        end
+        @ctx.rules = {}
         @runner.reset
       end
 
       # After pry has evaluated a commanding within the binding context of a
       # test file, register all the rules it discovered.
       Pry.hooks.add_hook(:after_eval, 'inspec_after_eval') do
-        @current_eval_new_tests =
-          @runner.register_rules(@ctx) do |rule_id, rule|
-            @current_eval_rules[rule_id] != Inspec::Rule.merge_count(rule)
-          end
-        @runner.run if @current_eval_new_tests
+        @runner.run if !@ctx.rules.empty?
       end
 
       # Don't print out control class inspection when the user uses DSL methods.
       # Instead produce a result of evaluating their control.
       Pry.config.print = proc do |_output_, value, pry|
-        next if @current_eval_new_tests
+        next if !@ctx.rules.empty?
         pry.pager.open do |pager|
           pager.print pry.config.output_prefix
           Pry::ColorPrinter.pp(value, pager, Pry::Terminal.width! - 1)

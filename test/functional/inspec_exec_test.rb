@@ -140,7 +140,7 @@ Target:  local://
 \e[32m     \xE2\x9C\x94  should be directory\e[0m
 
 Profile Summary: \e[32m1 successful\e[0m, \e[31m0 failures\e[0m, \e[37m0 skipped\e[0m
-Test Summary: \e[32m2 successful\e[0m, \e[31m0 failures\e[0m, \e[37m0 skipped\e[0m
+Test Summary: \e[32m1 successful\e[0m, \e[31m0 failures\e[0m, \e[37m0 skipped\e[0m
 "
     end
   end

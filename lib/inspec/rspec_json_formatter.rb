@@ -105,7 +105,7 @@ class InspecRspecJson < InspecRspecMiniJson
   def start(_notification)
     # Note that the default profile may have no name - therefore
     # the hash may have a valid nil => entry.
-    @profiles_info ||= Hash[@profiles.map { |x| profile_info(x) }]
+    @profiles_info = Hash[@profiles.map { |x| profile_info(x) }]
   end
 
   def dump_one_example(example, control)
@@ -180,18 +180,15 @@ class InspecRspecJson < InspecRspecMiniJson
     skipped = 0
     passed = 0
 
-    @profiles_info.each do |_name, profile|
-      total += profile[:controls].length
-      profile[:controls].each do |_control_name, control|
-        next unless control[:results]
-        control[:results].each do |result|
-          if result[:status] == 'failed'
-            failed +=1
-          elsif result[:status] == 'skipped'
-            skipped +=1
-          else
-            passed +=1
-          end
+    @anonymous_tests.each do |control|
+      next unless control[:results]
+      control[:results].each do |result|
+        if result[:status] == 'failed'
+          failed +=1
+        elsif result[:status] == 'skipped'
+          skipped +=1
+        else
+          passed +=1
         end
       end
     end
@@ -202,7 +199,7 @@ class InspecRspecJson < InspecRspecMiniJson
   private
 
   def profile_info(profile)
-    info = profile.info.dup
+    info = profile.info!.dup
     [info[:name], info]
   end
 
@@ -311,9 +308,6 @@ class InspecRspecCli < InspecRspecJson # rubocop:disable Metrics/ClassLength
     controls_res = controls_summary
     tests_res = tests_summary
 
-    res = @output_hash[:summary]
-    require 'pry';binding.pry if !res.nil?
-
     s = format('Profile Summary: %s%d successful%s, %s%d failures%s, %s%d skipped%s',
               COLORS['passed'], controls_res['passed'], COLORS['reset'],
               COLORS['failed'], controls_res['failed']['total'], COLORS['reset'],
@@ -325,8 +319,6 @@ class InspecRspecCli < InspecRspecJson # rubocop:disable Metrics/ClassLength
               COLORS['failed'], tests_res['failed'], COLORS['reset'],
               COLORS['skipped'], tests_res['skipped'], COLORS['reset'])
     output.puts(s) if !@anonymous_tests.empty?
-
-
   end
 
   private

@@ -34,7 +34,7 @@ module Inspec
     def_delegator :@test_collector, :report
     def_delegator :@test_collector, :reset
 
-    attr_reader :backend, :rules, :attributes
+    attr_reader :backend, :rules, :attributes, :target_profiles
     def initialize(conf = {})
       @rules = []
       @conf = conf.dup

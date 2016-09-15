@@ -17,7 +17,8 @@ module Inspec
                                    'attributes' => attributes })
     end
 
-    attr_reader :attributes, :rules, :profile_id, :resource_registry
+    attr_reader :attributes, :profile_id, :resource_registry
+    attr_accessor :rules
     def initialize(profile_id, backend, conf)
       if backend.nil?
         fail 'ProfileContext is initiated with a backend == nil. ' \
@@ -132,6 +133,11 @@ module Inspec
 
     def register_rule(r)
       # get the full ID
+      file = if @current_load.nil?
+        'unknown'
+      else
+        @current_load[:file] || 'unknown'
+      end
       r.instance_variable_set(:@__file, current_load[:file])
       r.instance_variable_set(:@__group_title, current_load[:title])
 
