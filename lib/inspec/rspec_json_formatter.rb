@@ -311,25 +311,22 @@ class InspecRspecCli < InspecRspecJson # rubocop:disable Metrics/ClassLength
     controls_res = controls_summary
     tests_res = tests_summary
 
-    if controls_res['total'] > 0
-      s = format('Profile Summary: %s%d successful%s, %s%d failures%s, %s%d skipped%s',
-                COLORS['passed'], controls_res['passed'], COLORS['reset'],
-                COLORS['failed'], controls_res['failed']['total'], COLORS['reset'],
-                COLORS['skipped'], controls_res['skipped'], COLORS['reset'])
-      output.puts(s)
-    elsif !@anonymous_tests.empty?
-      s = format('Test Summary: %s%d successful%s, %s%d failures%s, %s%d skipped%s',
-                COLORS['passed'], tests_res['passed'], COLORS['reset'],
-                COLORS['failed'], tests_res['failed'], COLORS['reset'],
-                COLORS['skipped'], tests_res['skipped'], COLORS['reset'])
-      output.puts(s)
-    else
-      s = format('Test Summary: %s%d successful%s, %s%d failures%s, %s%d skipped%s',
-            COLORS['passed'], 0, COLORS['reset'],
-            COLORS['failed'], 0, COLORS['reset'],
-            COLORS['skipped'], 0, COLORS['reset'])
-      output.puts(s)
-    end
+    res = @output_hash[:summary]
+    require 'pry';binding.pry if !res.nil?
+
+    s = format('Profile Summary: %s%d successful%s, %s%d failures%s, %s%d skipped%s',
+              COLORS['passed'], controls_res['passed'], COLORS['reset'],
+              COLORS['failed'], controls_res['failed']['total'], COLORS['reset'],
+              COLORS['skipped'], controls_res['skipped'], COLORS['reset'])
+    output.puts(s) if controls_res['total'] > 0
+
+    s = format('Test Summary: %s%d successful%s, %s%d failures%s, %s%d skipped%s',
+              COLORS['passed'], tests_res['passed'], COLORS['reset'],
+              COLORS['failed'], tests_res['failed'], COLORS['reset'],
+              COLORS['skipped'], tests_res['skipped'], COLORS['reset'])
+    output.puts(s) if !@anonymous_tests.empty?
+
+
   end
 
   private
